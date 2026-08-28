@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,6 +9,7 @@ using UnityEngine.UIElements;
 public class StoveCounter : BaseCounter
 
 {
+    public static event EventHandler onFryingStarted;
     [SerializeField] private FryingRecipeSO fryingrecipelist;
     [SerializeField] private FryingRecipeSO burningrecipelist;
     [SerializeField] private StoveCouonterVisual stoveCouonterVisual;
@@ -124,6 +126,7 @@ public class StoveCounter : BaseCounter
         this.fryingrecipe = fryingrecipe;
         State = StoveState.Frying;
         stoveCouonterVisual.ShowStoveEffect();
+        onFryingStarted?.Invoke(this, EventArgs.Empty);
         sound.Play();
 
     }
@@ -131,7 +134,7 @@ public class StoveCounter : BaseCounter
     {
         if (fryingrecipe == null)
         {
-            Debug.LogWarning("ʳ�����޸�ʳ�ģ��޷��������");
+            Debug.LogWarning("??????????????????????");
             return;
         }
         stoveCouonterVisual.ShowStoveEffect();
@@ -149,5 +152,8 @@ public class StoveCounter : BaseCounter
         sound.Pause();
         warningUI.hide();
     }
+    public static void clearStaticData()
+    {
+        onFryingStarted = null;
+    }
 }
-

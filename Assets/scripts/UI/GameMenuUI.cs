@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +11,7 @@ public class GameMenuUI : MonoBehaviour
     {
         startbutton.onClick.AddListener(()=>
         {
-            Loader.load(Loader.scene.GameScene);
+            Loader.LoadLevel(0);
         }
         );
         quitbutton.onClick.AddListener(() => 

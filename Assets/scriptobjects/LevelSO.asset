@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc6b021bf6a88284aa5628589d58e5a1, type: 3}
+  m_Name: LevelSO
+  m_EditorClassIdentifier: 
+  levelName: "\u65B0\u624B\u53A8\u623F"
+  isTutorial: 1
+  timeLimit: 60
+  orderRate: 2
+  orderMax: 5
+  recipes: {fileID: 11400000, guid: 0aa8509dcad367b479896a5a2b4de446, type: 2}
+  star1Score: 3
+  star2Score: 6
+  star3Score: 10

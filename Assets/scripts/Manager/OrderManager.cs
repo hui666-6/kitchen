@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +19,16 @@ public class OrderManager : MonoBehaviour
     private int successDeliveryCount = 0;
     private void Start()
     {
+        if (LevelManager.Instance != null)
+        {
+            recipelistSO levelRecipes = LevelManager.Instance.GetRecipeList();
+            if (levelRecipes != null)
+            {
+                recipesolist = levelRecipes;
+            }
+            orderRate = LevelManager.Instance.GetOrderRate();
+            orderMax = LevelManager.Instance.GetOrderMax();
+        }
         GameManager.Instance.onchangstate += GameManager_onchangstate;
     }
 
@@ -75,13 +85,13 @@ public class OrderManager : MonoBehaviour
         if (correctrecipe == null)
         {
             OnRecipeFailed?.Invoke(this, EventArgs.Empty);
-            print("�ϲ�ʧ��");
+            print("??????");
         }
         else
         { 
         orderRecipeSOList.Remove(correctrecipe);
         OnRecipeSuccessed?.Invoke(this, EventArgs.Empty);
-            print("�ϲ˳ɹ�");
+            print("?????");
             successDeliveryCount++;
         }
 
@@ -115,5 +125,10 @@ public class OrderManager : MonoBehaviour
     public int GetsuccessDeliverCount()
     { 
       return successDeliveryCount;
+    }
+
+    public recipelistSO GetRecipeList()
+    {
+        return recipesolist;
     }
 }

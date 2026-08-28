@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +10,7 @@ public class ClearStaticData : MonoBehaviour
         TrashCounter.ClearStaticData();
         KitchenObjectHolder.ClearStaticData();
         CuttingCounter.clearStaticData();
+        StoveCounter.clearStaticData();
     }
 
   
