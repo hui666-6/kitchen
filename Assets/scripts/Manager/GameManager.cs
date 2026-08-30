@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,25 +26,12 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (FindObjectOfType<LevelManager>() == null)
-        {
-            GameObject levelManagerGO = new GameObject("LevelManager");
-            levelManagerGO.AddComponent<LevelManager>();
-        }
-        if (FindObjectOfType<TutorialManager>() == null)
-        {
-            GameObject tutorialManagerGO = new GameObject("TutorialManager");
-            tutorialManagerGO.AddComponent<TutorialManager>();
-        }
         Instance = this;
+        gameplayingtimerTotal = gameplayingtimer;
+       
     }
     private void Start()
     {
-        if (LevelManager.Instance != null)
-        {
-            gameplayingtimer = LevelManager.Instance.GetTimeLimit();
-        }
-        gameplayingtimerTotal = gameplayingtimer;
         TrunTowaitingtostart();
         gameinput.Instance.OnPause += GameInput_OnPause;
     }
