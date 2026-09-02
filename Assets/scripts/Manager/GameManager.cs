@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class GameManager : MonoBehaviour
         gameover    
     }
     private State state;
-    private float watingtostarttime= 1;
     private float countdownstarttime = 3;
     private float gameplayingtimer = 60;
     private float gameplayingtimerTotal;
@@ -36,6 +36,14 @@ public class GameManager : MonoBehaviour
         gameinput.Instance.OnPause += GameInput_OnPause;
     }
 
+    private void OnDestroy()
+    {
+        if (gameinput.Instance != null)
+        {
+            gameinput.Instance.OnPause -= GameInput_OnPause;
+        }
+    }
+
     private void GameInput_OnPause(object sender, EventArgs e)
     {
         ToggleGame();
@@ -46,10 +54,11 @@ public class GameManager : MonoBehaviour
         switch (state)
         { 
             case State.waitingtostart:
-                watingtostarttime -= Time.deltaTime;
-                if (watingtostarttime <= 0)
-                { 
-                  TruntoCountDownToStart();
+                // 不再按时间自动推进；固定检测物理 E 键（不受 Interact 改键影响）
+                // 暂停时不响应 E，避免暂停界面打开时误跳过教程
+                if (!isgamePause && Input.GetKeyDown(KeyCode.E))
+                {
+                    TruntoCountDownToStart();
                 }
                 break;
             case State.countdowntostart:

@@ -20,6 +20,13 @@ public class OrderManager : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.onchangstate += GameManager_onchangstate;
+
+        // 每个关卡的菜单列表不同：优先使用当前关卡（LevelManager）配置的菜单池，
+        // 未配置时回退到本组件上序列化的默认菜单，保证没有 LevelManager 的场景也能运行。
+        if (LevelManager.Instance != null && LevelManager.Instance.RecipeList != null)
+        {
+            recipesolist = LevelManager.Instance.RecipeList;
+        }
     }
 
     private void GameManager_onchangstate(object sender, EventArgs e)
@@ -56,6 +63,8 @@ public class OrderManager : MonoBehaviour
     private void OrderNewRecipe()
     {
         if (orderCount >= orderMax) return;
+        // 菜单池为空则不生成，避免空列表随机取值报错
+        if (recipesolist == null || recipesolist.recipeSOList == null || recipesolist.recipeSOList.Count == 0) return;
         orderCount++;
         int index = UnityEngine.Random.Range(0, recipesolist.recipeSOList.Count);
         orderRecipeSOList.Add(recipesolist.recipeSOList[index]);

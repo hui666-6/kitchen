@@ -6,18 +6,17 @@ using UnityEngine;
 public class TutorialUI : MonoBehaviour
 {
     [SerializeField] private GameObject uiparent;
-    [SerializeField] private TextMeshProUGUI forwardkey;
-    [SerializeField]private TextMeshProUGUI  backkey;
-    [SerializeField] private TextMeshProUGUI leftkey;
-    [SerializeField] private TextMeshProUGUI rightkey;
-    [SerializeField] private TextMeshProUGUI getkey;
-    [SerializeField] private TextMeshProUGUI cutkey;
-    [SerializeField] private TextMeshProUGUI pausekey;
+    [SerializeField] private List<TextMeshProUGUI> keyTexts = new List<TextMeshProUGUI>();
+
     private void Start()
     {
         GameManager.Instance.onchangstate += gamemanager_onchangstate;
         show();
     }
+    private void OnDisable()
+    {
+        GameManager.Instance.onchangstate -= gamemanager_onchangstate;
+    }   
 
     private void gamemanager_onchangstate(object sender, System.EventArgs e)
     {
@@ -40,15 +39,25 @@ public class TutorialUI : MonoBehaviour
     {
       uiparent.SetActive(false);
     }
+/// <summary>
+/// 更新按键显示 gameinput 在awake里会从playerprefs读取玩家自定义的按键覆盖
+/// </summary>
     private void UpdateVisual()
     {
-        forwardkey.text = gameinput.Instance.GetBindingDisplayString(gameinput.BindingType.forward);
-        backkey.text = gameinput.Instance.GetBindingDisplayString(gameinput.BindingType.back);
-        leftkey.text = gameinput.Instance.GetBindingDisplayString(gameinput.BindingType.left);
-        rightkey.text = gameinput.Instance.GetBindingDisplayString(gameinput.BindingType.right);
-        getkey.text = gameinput.Instance.GetBindingDisplayString(gameinput.BindingType.get);
-        cutkey.text = gameinput.Instance.GetBindingDisplayString(gameinput.BindingType.cut);
-        pausekey.text = gameinput.Instance.GetBindingDisplayString(gameinput.BindingType.pause);
+        var bindingTypes = new[]
+        {
+            gameinput.BindingType.forward,
+            gameinput.BindingType.back,
+            gameinput.BindingType.left,
+            gameinput.BindingType.right,
+            gameinput.BindingType.get,
+            gameinput.BindingType.cut,
+            gameinput.BindingType.pause
+        };
 
+        for (int i = 0; i < bindingTypes.Length && i < keyTexts.Count; i++)
+        {
+            keyTexts[i].text = gameinput.Instance.GetBindingDisplayString(bindingTypes[i]);
+        }
     }
 }
