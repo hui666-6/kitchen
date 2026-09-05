@@ -10,6 +10,7 @@ public class ClearStaticData : MonoBehaviour
         TrashCounter.ClearStaticData();
         KitchenObjectHolder.ClearStaticData();
         CuttingCounter.clearStaticData();
+        platekitchenobject.ClearStaticData();
     }
 
   

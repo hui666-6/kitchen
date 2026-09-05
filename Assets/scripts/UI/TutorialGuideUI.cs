@@ -13,11 +13,12 @@ public class TutorialGuideUI : MonoBehaviour
     /// <summary>一个步骤的完成条件类型。</summary>
     public enum TutorialTask
     {
-        PickUpObject,   // 拿起物体（可指定具体物体，留空=任意物体）
-        PutDownObject,  // 把物体放到柜台上
-        ChopSomething,  // 切了一次菜
-        DeliverRecipe,  // 成功交付一个订单
-        Custom          // 手动完成：由外部代码调用 CompleteCurrentStep()
+        PickUpObject,        // 拿起物体（可指定具体物体，留空=任意物体）
+        PutDownObject,       // 把物体放到空柜台上
+        AddIngredientToPlate,// 把食材加到餐盘上（可指定具体食材，留空=任意食材）
+        ChopSomething,       // 切了一次菜
+        DeliverRecipe,       // 成功交付一个订单
+        Custom               // 手动完成：由外部代码调用 CompleteCurrentStep()
     }
 
     [Serializable]
@@ -26,7 +27,7 @@ public class TutorialGuideUI : MonoBehaviour
         public string title;              // 任务标题
         [TextArea] public string content; // 任务内容
         public TutorialTask task;         // 完成条件
-        [Tooltip("仅 PickUpObject 使用：需要拿起的指定物体（如盘子）。留空表示拿起任意物体即可。")]
+        [Tooltip("PickUpObject / AddIngredientToPlate 使用：指定的物体或食材（如盘子、面包片）。留空表示任意皆可。")]
         public KitchenObjectSO requiredObject;
     }
 
@@ -56,6 +57,7 @@ public class TutorialGuideUI : MonoBehaviour
         // 订阅一次性动作事件（这些动作发生在某一帧，靠事件捕捉最准确）
         KitchenObjectHolder.ondrop += OnDrop;
         CuttingCounter.onchop += OnChop;
+        platekitchenobject.OnAnyIngredientAdded += OnIngredientAdded;
         if (OrderManager.Instance != null)
         {
             OrderManager.Instance.OnRecipeSuccessed += OnRecipeSuccessed;
@@ -79,6 +81,7 @@ public class TutorialGuideUI : MonoBehaviour
     {
         KitchenObjectHolder.ondrop -= OnDrop;
         CuttingCounter.onchop -= OnChop;
+        platekitchenobject.OnAnyIngredientAdded -= OnIngredientAdded;
         if (OrderManager.Instance != null)
         {
             OrderManager.Instance.OnRecipeSuccessed -= OnRecipeSuccessed;
@@ -115,6 +118,7 @@ public class TutorialGuideUI : MonoBehaviour
                 return player.Instance.GetKitchenObjectSO() == step.requiredObject;
 
             case TutorialTask.PutDownObject:
+            case TutorialTask.AddIngredientToPlate:
             case TutorialTask.ChopSomething:
             case TutorialTask.DeliverRecipe:
                 // 动作类条件：由事件回调置位
@@ -136,6 +140,17 @@ public class TutorialGuideUI : MonoBehaviour
     private void OnChop(object sender, EventArgs e)
     {
         if (IsWaitingFor(TutorialTask.ChopSomething)) eventTaskDone = true;
+    }
+
+    private void OnIngredientAdded(object sender, platekitchenobject.OnIngredientAddedEventArgs e)
+    {
+        if (!IsWaitingFor(TutorialTask.AddIngredientToPlate)) return;
+        // 未指定食材=任意食材都算；指定了就必须匹配（如面包片）
+        KitchenObjectSO required = steps[currentIndex].requiredObject;
+        if (required == null || e.kitchenObjectSO == required)
+        {
+            eventTaskDone = true;
+        }
     }
 
     private void OnRecipeSuccessed(object sender, EventArgs e)
